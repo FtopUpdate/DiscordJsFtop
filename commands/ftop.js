@@ -154,7 +154,7 @@ module.exports.run = async (bot, msg, args) => {
                             }else{
                                 val = "(-$" + (val.toLocaleString() + '').substr(1) + ")";
                             }
-                            newObj.values[i] = lastObj.values[i].split(" ")[0] + " " + facName  + " " + val;
+                            newObj.values[i] = lastObj.values[i].split(" ")[0] + " " + facName  + " $" + (Number(lastObj.values[i].split(" ")[2])).toLocaleString() + " " + val;
                         }
                     }
                 }

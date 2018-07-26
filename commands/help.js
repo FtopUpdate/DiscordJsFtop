@@ -6,7 +6,7 @@ module.exports.run = async(bot, msg, args) => {
     let serverEmbed = new discordjs.RichEmbed()
     .setDescription(`**Factions Top Bot v${config.version} : Command List**`)
     .setThumbnail(sicon)
-    .setColor("#77f442")
+    .setColor(0x42f47d)
     .addBlankField();
     
     bot.commands.forEach(element => {
@@ -19,7 +19,6 @@ module.exports.run = async(bot, msg, args) => {
         }
         if(!str.length == 0 ){
             serverEmbed.addField(`${element.help.name}`, str);
-            // serverEmbed.addBlankField();
         }
     });
 

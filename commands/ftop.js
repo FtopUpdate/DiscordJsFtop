@@ -28,6 +28,7 @@ module.exports.run = async (bot, msg, args) => {
         if(err) throw err;
         let dbo = db.db("DiscordFtopBot");
 
+        let valArgs = null;
         let serverColExists = false;
 
         dbo.listCollections().toArray(function(err, col){
@@ -97,22 +98,27 @@ module.exports.run = async (bot, msg, args) => {
                 let regex1 = new RegExp(/^[\d{1,2}]{1,2}./);
                 let regex2 = new RegExp(/[a-zA-Z0-9]{3,16}/i);
                 let regex3 = new RegExp(/\$[0-9]{1,3}.+/);
-                for(let i in arg){
-                    let current = arg[i].split(" ");
+
+                let tempArg = [];
+                if(arg[0].split(" ").includes("Total:")){
+                    for(let i in arg){
+                        tempArg[i] = arg[i].split(" ")[0] + " " + arg[i].split(" ")[1] + " " + arg[i].split(" ")[4];
+                    }
+                    valArgs = tempArg;
+                }else{
+                    valArgs = (args.join(" ") + '').split("\n");
+                }
+
+                for(let i in tempArg){
+                    let current = tempArg[i].split(" ");
                     if(!regex1.test(current[0])){
                         validBool = false;
                     }
                     if(!regex2.test(current[1])){
                         validBool = false;
                     }
-                    if(current[2].includes("Total:")){
-                        if(!regex3.test(current[3])){
-                            validBool = false;
-                        }
-                    }else{
-                        if(!regex3.test(current[2])){
-                            validBool = false;
-                        }
+                    if(!regex3.test(current[2])){
+                        validBool = false;
                     }
                 }
                 if(!validBool){
@@ -120,7 +126,6 @@ module.exports.run = async (bot, msg, args) => {
                     return;
                 }
                 
-                console.log("Valid input!");
                 addNewValues();
             }
         }
@@ -179,7 +184,7 @@ module.exports.run = async (bot, msg, args) => {
             ftopObj.sentBy = msg.author.username + "#" + msg.author.discriminator;
             ftopObj.timeSent = new Date().getTime();
 
-            let vals = (args.join(" ") + '').split("\n");
+            let vals = valArgs;
             for(let i = 0; i < vals.length; i++){
                 let row = vals[i].split(" ");
                 let part1 = row[0] + " ";

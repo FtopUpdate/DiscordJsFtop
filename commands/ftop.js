@@ -2,7 +2,7 @@ const discordjs = require('discord.js');
 const fs = require('fs');
 const config = require('../config.json');
 const mongo = require('mongodb').MongoClient;
-let url = config.url;
+let url = process.env.MONGO_URL;
 
 let milisToDays = function (ms) {
 
@@ -48,7 +48,6 @@ module.exports.run = async (bot, msg, args) => {
         let createCol = function(){
             dbo.createCollection(msg.guild.id, function(error, result){
                 if(error) console.log("Something went wrong when creating a collection.");
-                console.log("Created col");
             });
             addInfoDoc();
         }
@@ -56,7 +55,6 @@ module.exports.run = async (bot, msg, args) => {
         let addInfoDoc = function(){
             dbo.collection(msg.guild.id).insertOne({_id: "info", guildName: msg.guild.name, authorisedUsers: ["Nukeᶦᵗ#2745"]}, function(error2, res){
                 if(error2) console.log("Something went wrong when creating a document.");
-                console.log("Inserted one doc");
             });
 
             closeCon();
@@ -69,11 +67,9 @@ module.exports.run = async (bot, msg, args) => {
                 authUsers = res.authorisedUsers;
                 let curUser = msg.author.username + "#" + msg.author.discriminator;
                 if(authUsers.includes(curUser)){
-                    console.log(curUser + " is authorised");
                     checkGoal();
                 }else{
                     msg.channel.send("You are not authorized to use this command.").then(msg => msg.delete(3000));
-                    console.log(curUser + " is NOT authorised");
                     closeCon();
                 }
             });
@@ -172,7 +168,6 @@ module.exports.run = async (bot, msg, args) => {
                 embed.addField("Values:", str);
                 msg.channel.send(embed);
 
-                // console.log("newobj:", newObj);
             });
 
             closeCon();
@@ -195,7 +190,6 @@ module.exports.run = async (bot, msg, args) => {
 
             dbo.collection(msg.guild.id).insertOne(ftopObj, function(err, res){
                 if(err) console.log("Something went wrong when saving new doc");
-                console.log("Inserted new values doc.");
                 msg.channel.send("Added values into db.").then(msg => msg.delete(3000));
                 closeCon();
             });
@@ -203,7 +197,6 @@ module.exports.run = async (bot, msg, args) => {
 
         let closeCon = function(){
             db.close();
-            console.log("Closed connection");
         }
 
         msg.delete();

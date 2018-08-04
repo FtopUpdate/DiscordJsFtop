@@ -13,6 +13,7 @@
   "dependencies": {
     "discord.js": "^11.3.2",
     "mongodb": "^3.1.1",
+    "node-cron": "^1.2.1",
     "nodemon": "^1.18.3",
     "npm": "^6.2.0",
     "path": "^0.12.7"

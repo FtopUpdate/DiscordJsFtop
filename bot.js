@@ -10,7 +10,7 @@ const bot = new Discord.Client({disableEveryone: true});
 //Set bots activity to be the help command.
 bot.on('ready', async () => {
     console.log("Bot loaded!");
-    bot.user.setActivity(`${config.prefix}help (v${config.version})`, {type:"PLAYING"}).catch(console.error);
+    bot.user.setActivity(`v${config.version}`, {type:"PLAYING"}).catch(console.error);
     cron.schedule('0 * * * *', function(){
         sendFtopValues();
     });
@@ -89,6 +89,7 @@ let sendFtopValues = function(){
         
                         for(let i in lastObj.values){
                             let facName = lastObj.values[i].split(" ")[1];
+                            let found = false;
                             for(let j in semiLastObj.values){
                                 let facName2 = semiLastObj.values[j].split(" ")[1];
                                 if(facName === facName2){
@@ -98,15 +99,19 @@ let sendFtopValues = function(){
                                     }else{
                                         val = "(-$" + (val.toLocaleString() + '').substr(1) + ")";
                                     }
+                                    found = true;
                                     newObj.values[i] = lastObj.values[i].split(" ")[0] + " " + facName  + " $" + (Number(lastObj.values[i].split(" ")[2])).toLocaleString() + " " + val;
                                 }
                             }
+                            if(!found){
+                                newObj.values[i] = lastObj.values[i].split(" ")[0] + " " + facName  + " $" + (Number(lastObj.values[i].split(" ")[2])).toLocaleString();
+                            }
+
                         }
         
                         let embed = new Discord.RichEmbed()
                             .setTitle("Factions Top")
                             .setColor(0x42f47d)
-                            .addField("Updated by:", newObj.sentBy)
                             .addField("Time:", newObj.timeSent);
                         let str = "";
         

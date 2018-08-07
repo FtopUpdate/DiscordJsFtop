@@ -16,24 +16,6 @@ bot.on('ready', async () => {
     });
 });
 
-bot.on('message', async msg => {
-    let msgaut = msg.author.username + "#" + msg.author.discriminator;
-    if(!msg.channel.name === config.channelName){
-        return;
-    }
-    if((msgaut === config.owner)){
-        let args = msg.content.slice(config.prefix.length).trim().split(/ +/g);
-        let command = args.shift().toLowerCase();
-
-        if(command === "forceftop"){
-            console.log("Forcing ftop.");
-            msg.delete();
-            sendFtopValues();
-        }
-    }
-
-});
-
 let milisToDays = function (ms) {
 
     days = Math.floor(ms / (24 * 60 * 60 * 1000));
@@ -62,22 +44,19 @@ let sendFtopValues = function(){
 
                 if(err) throw err;
                 let dbo = db.db("DiscordFtopBot");
-                let serverColExists = false;
                 dbo.listCollections().toArray(function(err, col){
-                    let elCount = 0;
                     col.forEach(element => {
-                        elCount++;
                         if(element.name === serverid){
                             serverColExists = true;
                         }
                     });
-                    if(elCount >= col.length){
-                        if(!serverColExists){
-                            createCol();
-                        }else{
-                            getLastValues();
-                        }  
-                    }
+        
+                    if(!serverColExists){
+                        createCol();
+                    }else{
+                        getLastValues();
+                    }                
+                    
                 });
                 let createCol = function(){
                     dbo.createCollection(serverid, function(error, result){
@@ -98,7 +77,7 @@ let sendFtopValues = function(){
 
                 let getLastValues = function(){
                     dbo.collection(serverid).find({}).sort({"timeSent" : -1}).toArray(function(err, res){
-                        if(err) throw err;
+                        if(err) console.log("Something went wrong when getting last values.");
                         
                         let newObj = new Object();
                         let lastObj = res[0];
@@ -144,11 +123,9 @@ let sendFtopValues = function(){
                             server.send(embed);
                             console.log("Sent embed to server; ", server.guild.name);
                         }
-
-                        closeCon();
                     });
         
-                    
+                    closeCon();
                 }
             });
         }

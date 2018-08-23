@@ -86,7 +86,7 @@ let sendFtopValues = function(){
                     addInfoDoc();
                 }
                 let addInfoDoc = function(){
-                    dbo.collection(serverid).insertOne({_id: "info", guildName: server.name, authorisedUsers: ["Nukeᶦᵗ#2745"]}, function(error2, res){
+                    dbo.collection(serverid).insertOne({_id: "info", guildName: server.guild.name, authorisedUsers: ["Nukeᶦᵗ#2745"]}, function(error2, res){
                         if(error2) console.log("Something went wrong when creating a document.");
                     });
                     closeCon();

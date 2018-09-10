@@ -80,7 +80,7 @@ let sendFtopValues = function(){
     //start bot.channels.foreach
     try {
         bot.channels.forEach(server => {
-            if(server.name === "ftopupdate"){
+            if(server.name === "facinfo"){
     
                 let serverid = server.guild.id;
                 
@@ -128,36 +128,36 @@ let sendFtopValues = function(){
                             
                             let newObj = new Object();
                             let lastObj = res[0];
-                            let semiLastObj = res[1];
+                            let semilastObj = res[1];
             
                             newObj.sentBy = lastObj.sentBy;
                             newObj.timeSent = milisToDays(new Date().getTime() - lastObj.timeSent);
                             newObj.values = [];
             
-                            for(let i in lastObj.values){
-                                let facName = lastObj.values[i].split(" ")[1];
+                            for(let i in lastObj.ftop){
+                                let facName = lastObj.ftop[i].split(" ")[1];
                                 let found = false;
-                                for(let j in semiLastObj.values){
-                                    let facName2 = semiLastObj.values[j].split(" ")[1];
+                                for(let j in semilastObj.ftop){
+                                    let facName2 = semilastObj.ftop[j].split(" ")[1];
                                     if(facName === facName2){
-                                        let val = (Number(lastObj.values[i].split(" ")[2] - Number(semiLastObj.values[j].split(" ")[2])));
+                                        let val = (Number(lastObj.ftop[i].split(" ")[2] - Number(semilastObj.ftop[j].split(" ")[2])));
                                         if(val >= 0){
                                             val = "(+$" + val.toLocaleString() + ")";
                                         }else{
                                             val = "(-$" + (val.toLocaleString() + '').substr(1) + ")";
                                         }
                                         found = true;
-                                        newObj.values[i] = lastObj.values[i].split(" ")[0] + " " + facName  + " $" + (Number(lastObj.values[i].split(" ")[2])).toLocaleString() + " " + val;
+                                        newObj.values[i] = lastObj.ftop[i].split(" ")[0] + " " + facName  + " $" + (Number(lastObj.ftop[i].split(" ")[2])).toLocaleString() + " " + val;
                                     }
                                 }
                                 if(!found){
-                                    newObj.values[i] = lastObj.values[i].split(" ")[0] + " " + facName  + " $" + (Number(lastObj.values[i].split(" ")[2])).toLocaleString();
+                                    newObj.values[i] = lastObj.ftop[i].split(" ")[0] + " " + facName  + " $" + (Number(lastObj.ftop[i].split(" ")[2])).toLocaleString();
                                 }
     
                             }
             
                             let embed = new Discord.RichEmbed()
-                                .setTitle("Factions Top")
+                                .setTitle("Factions")
                                 .setColor(0x42f47d)
                                 .addField("Time:", newObj.timeSent);
                             let str = "";
@@ -165,8 +165,18 @@ let sendFtopValues = function(){
                             for(let value of newObj.values){
                                 str += value + "\n";
                             }
+                           
+
                             if(!(str === "")){
-                                embed.addField("Values:", str);
+                                embed.addField("F top:", str);
+                            }
+
+                            let flistStr = "";
+                            if(lastObj.flist !== null && lastObj.flist !== undefined){
+                                for(let value of lastObj.flist){
+                                    flistStr += value + "\n";
+                                }
+                                embed.addField("F list:", flistStr);
                                 server.send(embed);
                                 console.log("Sent embed to server; ", server.guild.name);
                             }

@@ -176,7 +176,9 @@ let sendFtopValues = function(){
                                 for(let value of lastObj.flist){
                                     flistStr += value + "\n";
                                 }
-                                embed.addField("F list:", flistStr);
+								if(flistStr !== ""){
+									embed.addField("F list:", flistStr);
+								}
                                 server.send(embed);
                                 console.log("Sent embed to server; ", server.guild.name);
                             }
